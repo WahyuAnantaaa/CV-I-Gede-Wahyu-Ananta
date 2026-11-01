@@ -1,7 +1,10 @@
 /* TOKEN: satu identitas, bukan 7 zona warna beda */
 :root{
-  --bg:#0B0C0F; --fg:#EDEAE2; --muted:#8A8D93; --accent:#4F5BFF;
-  --line:rgba(237,234,226,.14); --surface:rgba(255,255,255,.035);
+  /* TERANG (default) */
+  --bg:#F3F4F6; --fg:#14161A; --muted:#5C616B; --accent:#3440D6;
+  --line:rgba(20,22,26,.14); --surface:rgba(20,22,26,.035);
+  --dots:rgba(20,22,26,.07); --stripe:rgba(20,22,26,.04); --pill-bg:rgba(243,244,246,.88);
+  --glow:rgba(52,64,214,.08); --ok:#1B8A4B; --fx:#fff;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px;
   --sp-6:32px; --sp-7:48px; --sp-8:64px; --sp-9:96px;
   --r:4px; --r-pill:999px;
@@ -11,9 +14,17 @@
   --f-sans:'Space Grotesk',system-ui,sans-serif;
   --f-serif:'Newsreader',Georgia,serif;
 }
+
+/* GELAP: abu arang yang lebih lembut, bukan hitam pekat */
+[data-theme="dark"]{
+  --bg:#15171C; --fg:#ECE9E1; --muted:#9A9EA6; --accent:#7580FF;
+  --line:rgba(236,233,225,.14); --surface:rgba(255,255,255,.04);
+  --dots:rgba(236,233,225,.05); --stripe:rgba(255,255,255,.03); --pill-bg:rgba(21,23,28,.85);
+  --glow:rgba(117,128,255,.12); --ok:#5FD98A;
+}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .3s ease,color .3s ease}
 .wrap{max-width:760px;margin-inline:auto;padding-inline:var(--sp-6)}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -25,7 +36,7 @@ h1,h2,h3{font-weight:600;letter-spacing:-.01em;line-height:1.08}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
 
 .placeholder-img{display:flex;align-items:center;justify-content:center;text-align:center;
-  background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 10px,transparent 10px 20px);
+  background:repeating-linear-gradient(135deg,var(--stripe) 0 10px,transparent 10px 20px);
   border:1px solid var(--line);font-size:.72rem;color:var(--muted);letter-spacing:.04em;padding:var(--sp-4)}
 
 /* RAIL: index bernomor di kiri, pengganti zona warna sebagai wayfinding */
@@ -45,7 +56,6 @@ body.past-intro .rail{opacity:1;pointer-events:auto}
 /* P0: sambutan cepat konstan -> banner landscape "duar" -> pop-up scroll */
 html.lock,html.lock body{overflow:hidden}
 .p0{position:relative;height:100dvh;background:var(--bg);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-5)}
-.p0::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 45%,rgba(79,91,255,.10),transparent 70%);pointer-events:none}
 .p0-welcome{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
   font-family:var(--f-serif);font-style:italic;font-weight:400;font-size:clamp(2.2rem,8vw,4.6rem);z-index:2;
   transition:opacity .18s ease}
@@ -73,7 +83,7 @@ html.lock,html.lock body{overflow:hidden}
 
 .p0-scroll{position:relative;z-index:4;opacity:0;transform:translateY(12px);pointer-events:none;
   display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:var(--r-pill);
-  background:rgba(11,12,15,.78);border:1px solid var(--line);
+  background:var(--pill-bg);border:1px solid var(--line);
   font-size:.82rem;font-weight:600;color:var(--fg);white-space:nowrap;
   transition:opacity .5s var(--ease),transform .5s var(--ease),border-color .25s ease}
 .p0.ready .p0-scroll{opacity:1;transform:none;pointer-events:auto}
@@ -84,6 +94,36 @@ html.lock,html.lock body{overflow:hidden}
   .p0-banner{clip-path:none;transform:none}.p0.done .p0-banner{animation:none}
   .p0-flash{display:none}.p0-scroll svg{animation:none}
 }
+
+/* ORB PINTASAN: pengganti hamburger. Bisa diseret, menempel ke tepi, posisi diingat */
+.orb{position:fixed;left:calc(100vw - 64px);top:16px;width:48px;height:48px;border-radius:50%;z-index:72;display:flex;align-items:center;justify-content:center;
+  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--line);
+  box-shadow:0 6px 20px rgba(0,0,0,.12);cursor:grab;touch-action:none;transition:left .35s var(--ease),top .35s var(--ease),transform .25s var(--ease)}
+.orb:active{transform:scale(.94)}
+.orb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.orb.dragging{transition:transform .2s var(--ease);cursor:grabbing;transform:scale(1.08)}
+.orb-core{width:18px;height:18px;border-radius:50%;background:var(--fg);opacity:.82;transition:transform .3s var(--ease),opacity .3s ease}
+.orb[aria-expanded="true"] .orb-core{transform:scale(.55);opacity:1}
+.orb-panel{position:fixed;left:0;top:0;width:0;height:0;z-index:71;pointer-events:none}
+.orb-panel.open{pointer-events:auto}
+.orb-item{position:absolute;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line);color:var(--fg);
+  font-size:.66rem;font-weight:700;letter-spacing:.02em;opacity:0;visibility:hidden;transform:translate(0,0) scale(.4);
+  transition:transform .3s var(--ease),opacity .18s ease,visibility 0s .3s,background .2s ease,color .2s ease,border-color .2s ease}
+.orb-panel.open .orb-item{opacity:1;visibility:visible;transform:translate(var(--x),var(--y));
+  transition:transform .42s var(--ease) calc(var(--i)*24ms),opacity .2s ease calc(var(--i)*24ms),visibility 0s,background .2s ease,color .2s ease,border-color .2s ease}
+.orb-item svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.orb-item:hover,.orb-item:focus-visible{background:var(--fg);color:var(--bg);outline:none}
+.orb-item:hover,.orb-item:focus-visible{z-index:3}
+.orb-item.active{color:var(--accent);border-color:var(--accent)}
+.orb-item.active:hover,.orb-item.active:focus-visible{color:var(--bg)}
+.orb-item::after{content:attr(data-label);position:absolute;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:.72rem;font-weight:600;
+  padding:5px 10px;border-radius:var(--r-pill);background:var(--fg);color:var(--bg);opacity:0;pointer-events:none;transition:opacity .15s ease}
+.orb-panel[data-side="right"] .orb-item::after{right:calc(100% + 8px)}
+.orb-panel[data-side="left"] .orb-item::after{left:calc(100% + 8px)}
+.orb-item:hover::after,.orb-item:focus-visible::after{opacity:1}
+.orb-item.tip{z-index:2}.orb-item.tip::after{opacity:1}
+@media(prefers-reduced-motion:reduce){.orb,.orb-item,.orb-core{transition:none!important}}
 
 /* HERO */
 .hero{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:var(--sp-9) 0}
@@ -125,12 +165,7 @@ html.lock,html.lock body{overflow:hidden}
 .cv-intro{margin-bottom:var(--sp-7);max-width:64ch;color:var(--muted);font-size:.94rem;line-height:1.75}
 .chip-row{display:flex;flex-wrap:wrap;gap:8px 14px}
 .chip-row span{font-size:.82rem;color:var(--muted)}
-.chip-row span:not(:last-child)::after{content:'/';margin-left:14px;color:rgba(237,234,226,.25)}
-.bar-row{display:flex;flex-direction:column;gap:var(--sp-3)}
-.bar-item{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:var(--sp-4)}
-.bar-item span{font-size:.82rem;color:var(--muted)}
-.bar-track{height:2px;background:var(--line)}
-.bar-fill{height:100%;background:var(--accent)}
+.chip-row span:not(:last-child)::after{content:'/';margin-left:14px;color:var(--line)}
 .cv-cta{margin-top:var(--sp-7);display:inline-block}
 
 /* SKILL: daftar bernomor + accordion */
@@ -162,7 +197,7 @@ html.lock,html.lock body{overflow:hidden}
 .porto-desc{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:var(--sp-3)}
 .porto-tags{display:flex;gap:14px;flex-wrap:wrap}
 .porto-tags span{font-size:.74rem;color:var(--muted)}
-.porto-live{color:#5FD98A;font-size:.78rem;margin-top:var(--sp-3);display:inline-block}
+.porto-live{color:var(--ok);font-size:.78rem;margin-top:var(--sp-3);display:inline-block}
 @media(max-width:700px){.porto-item{grid-template-columns:1fr}}
 
 /* KONTAK */
@@ -181,6 +216,7 @@ html.lock,html.lock body{overflow:hidden}
 .threshold{padding:var(--sp-9) var(--sp-6);text-align:center;border-top:1px solid var(--line)}
 .threshold p{font-family:var(--f-serif);font-style:italic;font-size:clamp(1.3rem,3vw,1.8rem);color:var(--muted);max-width:24ch;margin:0 auto}
 .threshold span{color:var(--accent)}
+.threshold .th-a{color:inherit}
 
 /* TIMELINE */
 .tl-item{display:grid;grid-template-columns:110px 1fr;gap:var(--sp-5);padding:var(--sp-6) 0;border-top:1px solid var(--line)}
@@ -241,7 +277,62 @@ html.lock,html.lock body{overflow:hidden}
   .wrap{padding-inline:var(--sp-5)}
   .sec{padding:var(--sp-8) 0}
   .cv-spec-row{grid-template-columns:1fr;gap:var(--sp-2)}
-  .bar-item{grid-template-columns:1fr;gap:6px}
   .tl-item{grid-template-columns:1fr;gap:var(--sp-2)}
   .hero h1{font-size:clamp(2.1rem,9vw,2.8rem)}
 }
+
+/* PENYESUAIAN RITME: lebih rapat, lebih terbaca, animasi seperlunya */
+:root{--ease-out:cubic-bezier(.23,1,.32,1)}
+.wrap{max-width:860px}
+.hero{min-height:88dvh;padding:var(--sp-8) 0}
+.sec{padding:var(--sp-8) 0}
+.sec-head{margin-bottom:var(--sp-6)}
+.sec-num{display:none}
+.overview{font-size:1rem;margin-bottom:var(--sp-5)}
+.threshold{padding:var(--sp-7) var(--sp-6)}
+.porto-item{padding:var(--sp-6) 0}
+.tl-item{padding:var(--sp-5) 0}
+.exp-panel{padding:var(--sp-3) 0 var(--sp-5)}
+.exp-panel p,.tl-desc,.porto-desc,.cv-spec-val,.dot-list li{font-size:.95rem}
+.cv-spec-lbl,.skill-group-lbl,.kontak-row-lbl,.sn-divider span{text-transform:lowercase;letter-spacing:.01em;font-size:.82rem}
+.cv-spec-lbl::first-letter,.skill-group-lbl::first-letter,.kontak-row-lbl::first-letter,.sn-divider span::first-letter{text-transform:uppercase}
+.rv{transform:none;transition:opacity .3s var(--ease-out)}
+.btn-solid,.tabs button,.exp-tabs button,.sn-add,.p0-skip{transition:transform .16s var(--ease-out),background-color .2s ease,color .2s ease,border-color .2s ease}
+.btn-solid:active,.tabs button:active,.exp-tabs button:active,.sn-add:active{transform:scale(.97)}
+.sn-wrap{padding:var(--sp-3) 0}
+.sn-wrap:not(:has(.sn))::before{content:"Belum ada note. Tempel yang pertama.";width:100%;text-align:center;font-size:.92rem;color:var(--muted)}
+html[lang="en"] .sn-wrap:not(:has(.sn))::before{content:"No notes yet. Pin the first one."}
+@media(max-width:700px){.sec{padding:var(--sp-7) 0}.hero{min-height:auto;padding:var(--sp-7) 0}.threshold{padding:var(--sp-6) var(--sp-5)}}
+
+/* TOMBOL LANJUT (ikon) + KELAHIRAN ORB */
+.p0-scroll{position:absolute;left:50%;bottom:var(--sp-6);padding:13px 26px;gap:10px;transform:translate(-50%,12px)}
+.p0.ready .p0-scroll{transform:translate(-50%,0)}
+.p0-scroll svg{width:18px;height:18px;animation:bob 1.8s ease-in-out 3}
+.orb-wrap:not(.ready) .orb{visibility:hidden;pointer-events:none}
+.orb-wrap:not(.ready) .orb-panel{display:none}
+.orb::after{content:'';position:absolute;inset:-1px;border-radius:50%;border:1.5px solid var(--accent);opacity:0;pointer-events:none}
+.orb.hint::after{animation:orbHint 2.4s var(--ease-out) .9s 3}
+.orb.flying{pointer-events:none}
+.orb.pop{animation:orbPop .55s cubic-bezier(.34,1.56,.64,1)}
+@keyframes orbPop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes orbHint{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.9);opacity:0}}
+.orb-fx{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden}
+.orb-fx i{position:fixed;border-radius:50%;will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){.orb.pop,.orb.hint::after,.p0-scroll svg{animation:none}}
+
+/* TOMBOL LANJUT DRAMATIS + HERO KOSONG SEBELUM BOOM */
+.p0-scroll{padding:17px 38px;gap:12px;font-size:1rem;font-weight:700;letter-spacing:.01em;color:var(--bg);border-color:transparent;
+  background:linear-gradient(110deg,var(--fg) 35%,color-mix(in srgb,var(--fg) 55%,var(--accent)) 50%,var(--fg) 65%) 0 0/250% 100%;
+  box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 35%,transparent);animation:lanjutShine 2.8s linear infinite}
+.p0-scroll::before,.p0-scroll::after{content:'';position:absolute;inset:-1px;border-radius:inherit;border:2px solid var(--accent);opacity:0;pointer-events:none;animation:lanjutPing 2.4s var(--ease-out) infinite}
+.p0-scroll::after{animation-delay:1.2s}
+.p0-scroll svg{width:20px;height:20px}
+.p0.ready .p0-scroll:hover{transform:translate(-50%,0) scale(1.07);border-color:transparent}
+.p0.ready .p0-scroll:active{transform:translate(-50%,0) scale(.95)}
+.p0-scroll.nudge{animation:lanjutNudge .6s var(--ease-out),lanjutShine 2.8s linear infinite}
+@keyframes lanjutShine{to{background-position:-250% 0}}
+@keyframes lanjutPing{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.5,1.9);opacity:0}}
+@keyframes lanjutNudge{0%,100%{transform:translate(-50%,0) scale(1)}35%{transform:translate(-50%,-6px) scale(1.14)}65%{transform:translate(-50%,0) scale(.97)}}
+html.hero-wait #hero .rv{opacity:0!important}
+html.hero-wait body.past-intro .rail{opacity:0}
+@media(prefers-reduced-motion:reduce){.p0-scroll,.p0-scroll::before,.p0-scroll::after{animation:none}}
