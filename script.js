@@ -35,22 +35,22 @@ if('IntersectionObserver' in window){
 })();
 
 // ===== DAFTAR ASET: ganti jalur di sini kalau nama atau foldernya berbeda =====
-var WAHYU_PHOTO = 'assets/foto/cutout.webp';          // foto cutout transparan, 1400 px (layar besar / retina)
-var WAHYU_PHOTO_LO = 'assets/foto/cutout-1000.webp';  // versi 1000 px untuk layar kecil (lebih ringan di-decode)
+var WAHYU_PHOTO = 'assets/img/cutout.webp';
+var WAHYU_PHOTO_LO = 'assets/img/cutout-1000.webp';
 var WAHYU_LOGOS = {
-  capcut: 'assets/logo/capcut.svg',
-  canva: 'assets/logo/canva.svg',
-  ibispaint: 'assets/logo/ibispaint.svg',
-  chatgpt: 'assets/logo/chatgpt.svg',
-  gw: 'assets/logo/google-workspace.svg',
-  notion: 'assets/logo/notion.svg',
-  github: 'assets/logo/github.svg',
-  claude: 'assets/logo/claude.svg',
-  tiktok: 'assets/logo/tiktok-studio.svg',
-  m365: 'assets/logo/microsoft-365.svg',
-  smp: 'assets/logo/smp.webp',
-  smk: 'assets/logo/smk.webp',
-  dkv: 'assets/logo/dkv.webp'
+  capcut: 'assets/icon/capcut.svg',
+  canva: 'assets/icon/canva.svg',
+  ibispaint: 'assets/icon/ibispaint.svg',
+  chatgpt: 'assets/icon/chatgpt.svg',
+  gw: 'assets/icon/google-workspace.svg',
+  notion: 'assets/icon/notion.svg',
+  github: 'assets/icon/github.svg',
+  claude: 'assets/icon/claude.svg',
+  tiktok: 'assets/icon/tiktok-studio.svg',
+  m365: 'assets/icon/microsoft-365.svg',
+  smp: 'assets/icon/smp.webp',
+  smk: 'assets/icon/smk.webp',
+  dkv: 'assets/icon/dkv.webp'
 };
 
 // pilih ukuran foto sesuai kebutuhan layar, lalu mulai mengunduh semua aset sekarang (saat halo berjalan) supaya sudah siap sebelum "duar"
